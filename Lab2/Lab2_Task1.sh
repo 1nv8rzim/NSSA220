@@ -15,6 +15,10 @@ isNum () {
     fi
 }
 
+num_writer  () {
+
+}
+
 if [ $# -lt 1 ]; then
     echo "Error: Must have at least 1 parameter"
     usage
@@ -35,19 +39,32 @@ fi
 isNum $1
 
 if [ $# -eq 3 ]; then
+    isNum $1
     isNum $2
     isNum $3
+
+    num_rands=$1
+    min=$2
+    max=$3
 fi
 
 if [ $# -eq 2 ]; then
+    isNum $1
     isNum $2
+
+    num_rands=$1
+    min=$2
+    max=32767
 fi
 
+if [ $# -eq 1 ]; then
+    isNum $1
 
-num_rands=$1
-min=$2
-max=$3
+    num_rands=$1
+    min=1
+    max=32767
+fi
 
-echo $num_rands
-echo $min
-echo $max
+for i in {1..$num_rands}; do
+    num_writer
+done
