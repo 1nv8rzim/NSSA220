@@ -38,8 +38,8 @@ file_system_writer () {
     mkdir "${home_dir}Pictures"
     mkdir "${home_dir}Downloads"
     
-    letter_writer $1 $2 $3 $4
-    cp ./ackbar.png "${home_dir}/Pictures/ackbar.png"
+    letter_writer $1 $2 "${3}" "${4}"
+    cp /home/student/repositories/NSSA220/Lab2/Task2/ackbar.jpg "${home_dir}/Pictures/ackbar.png"
     
     permission_editor $1 $home_dir
 }
@@ -50,7 +50,7 @@ read -p "Department: " department
 read -p "Job Title: " title
 
 useradd -m $username
-file_system_writer $username $first_name $department $title
+file_system_writer $username $first_name "${department}" "${title}"
 
 
 
