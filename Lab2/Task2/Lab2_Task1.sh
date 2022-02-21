@@ -9,8 +9,11 @@ letter_writer () {
     file=/home/$1/Documents
     
     echo "Dear ${2}," > $file
-    echo "" > $file
-    echo "Welcome to Initech Corperation"
+    echo "" >> $file
+    echo "Welcome to Initech Corporation! We're so happy to have you in the ${3} Department as a ${4}. Please don't forget to complete your TPS Reports in a timely manner." >> $file
+    echo "" >> $file
+    echo "Sincerely," >> $file
+    echo "Bill Lumbergh" >> $file
 }
 
 read -p "Username: " username
