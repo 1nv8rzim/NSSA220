@@ -16,6 +16,8 @@ letter_writer () {
     echo "Bill Lumbergh" >> $file
 }
 
+file_system_writer () {}
+
 read -p "Username: " username
 read -p "Full Name: " first_name last_name
 read -p "Department: " department
