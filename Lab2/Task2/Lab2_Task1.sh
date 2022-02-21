@@ -19,8 +19,8 @@ letter_writer () {
 permission_editor () {
     # $1 = username
     # $2 = home_dir
-    chmod -R $1 $2
-    chown -R $1 $2
+
+    chmod -R $1:$1 $2
     
     chmod 444 "${home_dir}/Documents/welcome.txt"
 }
@@ -31,7 +31,7 @@ file_system_writer () {
     # $3 = department
     # $4 = title
     
-    home_dir=/home/$1
+    home_dir=/home/$1/
     
     mkdir "${home_dir}Documents"
     mkdir "${home_dir}Desktop"
@@ -39,7 +39,7 @@ file_system_writer () {
     mkdir "${home_dir}Downloads"
     
     letter_writer $1 $2 $3 $4
-    cp ackbar.png "${home_dir}/Pictures/ackbar.png"
+    cp ./ackbar.png "${home_dir}/Pictures/ackbar.png"
     
     permissions_editor $1 $home_dir
 }
@@ -50,6 +50,7 @@ read -p "Department: " department
 read -p "Job Title: " title
 
 useradd -m $username
+file_system_writer $username $first_name $department $title
 
 
 
