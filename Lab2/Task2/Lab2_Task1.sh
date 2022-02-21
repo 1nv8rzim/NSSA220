@@ -19,8 +19,8 @@ letter_writer () {
 permission_editor () {
     # $1 = username
     # $2 = home_dir
-
-    chmod -R $1:$1 $2
+    
+    chown -R $1:$1 $2
     
     chmod 444 "${home_dir}/Documents/welcome.txt"
 }
@@ -41,7 +41,7 @@ file_system_writer () {
     letter_writer $1 $2 $3 $4
     cp ./ackbar.png "${home_dir}/Pictures/ackbar.png"
     
-    permissions_editor $1 $home_dir
+    permission_editor $1 $home_dir
 }
 
 read -p "Username: " username
