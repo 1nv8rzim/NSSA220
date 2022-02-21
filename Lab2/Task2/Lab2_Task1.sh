@@ -6,7 +6,7 @@ letter_writer () {
     # $3 = department
     # $4 = title
     
-    file=/home/$1/Documents
+    file=/home/$1/Documents/welcome.txt
     
     echo "Dear ${2}," > $file
     echo "" >> $file
@@ -16,7 +16,33 @@ letter_writer () {
     echo "Bill Lumbergh" >> $file
 }
 
-file_system_writer () {}
+permission_editor () {
+    # $1 = username
+    # $2 = home_dir
+    chmod -R $1 $2
+    chown -R $1 $2
+    
+    chmod 444 "${home_dir}/Documents/welcome.txt"
+}
+
+file_system_writer () {
+    # $1 = username
+    # $2 = first_name
+    # $3 = department
+    # $4 = title
+    
+    home_dir=/home/$1
+    
+    mkdir "${home_dir}Documents"
+    mkdir "${home_dir}Desktop"
+    mkdir "${home_dir}Pictures"
+    mkdir "${home_dir}Downloads"
+    
+    letter_writer $1 $2 $3 $4
+    cp ackbar.png "${home_dir}/Pictures/ackbar.png"
+    
+    permissions_editor $1 $home_dir
+}
 
 read -p "Username: " username
 read -p "Full Name: " first_name last_name
