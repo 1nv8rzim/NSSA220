@@ -44,7 +44,7 @@ def process_numeric_fields(data):
 
 def print_metrics(sepal_length_metrics, sepal_width_metrics, petal_length_metrics, petal_width_metrics, iris_count):
     for data, title in zip((sepal_length_metrics, sepal_width_metrics, petal_length_metrics, petal_width_metrics), ('Sepal Length', 'Sepal Width', 'Petal Length', 'Petal Width')):
-        print(f'{title}: min={data["min"]}, max={data["max"]}, average={data["average"]}, standard_deviation={data["standard_deviation"]}\n')
+        print(f'{title}: min={data["min"]}, max={data["max"]}, average={data["average"]}, standard deviation={data["standard_deviation"]}\n')
     
     print('Iris Types: ', end='')
     for iris_type, count in iris_count.items():
