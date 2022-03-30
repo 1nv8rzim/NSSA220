@@ -10,6 +10,20 @@ def read_data(new_file, original_file):
             hash_original[command] = hash
     return hash_new, hash_original
 
+def find_conflicts(hash_new, hash_original):
+    conflicts = {}
+    
+    for command, original in hash_original.items():
+        if original != (new := hash_new[command]):
+            conflicts[command] = {'original': original, 'new':new}
+    
+    return conflicts
+    
+
+def print_conflicts(conflicts):
+    for command, hashes in conflicts.items():
+        print(f'{command}: MD5 original={hashes["original"]}, MD5 new={hashes["new"]}')
+
 def main():
     try:
         new_file, original_file = argv[1:]
@@ -18,10 +32,9 @@ def main():
     
     hash_new, hash_original = read_data(new_file, original_file)
     
-    for command, hash in hash_new.items():
-        print(command, hash)
-    for command, hash in hash_original.items():
-        print(command, hash)
+    conflicts = find_conflicts(hash_new, hash_original)
+    
+    print_conflicts(conflicts)
     
 
 if __name__ == '__main__':
