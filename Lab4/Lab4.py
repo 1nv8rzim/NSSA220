@@ -42,7 +42,21 @@ def make_process_plot(metric):
     plt.xlabel('time')
     plt.ylabel(metric)
     plt.title(f'{metric} metrics')
-    plt.legend()
+    plt.legend(loc='upper right')
+    plt.show()
+
+def make_bandwith_plots():
+    rx, tx, times = [], [], []
+    for time, values in system_metrics.items():
+        rx.append(values['rx'])
+        tx.append(values['tx'])
+        times.append(time)
+    plt.plot(times, rx, label='rx')
+    plt.plot(times, tx, label='tx')
+    plt.xlabel('time')
+    plt.ylabel('bandwidth utilization')
+    plt.title('bandwidth metrics')
+    plt.legend(loc='upper right')
     plt.show()
 
 def make_system_plots(metric):
@@ -54,11 +68,10 @@ def make_system_plots(metric):
     plt.xlabel('time')
     plt.ylabel(metric)
     plt.title(f'{metric} metrics')
-    plt.legend()
+    plt.legend(loc='upper right')
     plt.show()
 
-def make_bandwith_plots():
-    pass
+
         
 
 def main():
@@ -66,8 +79,7 @@ def main():
     get_system_metrics()
     make_process_plot('cpu')
     make_process_plot('memory')
-    make_system_plots('rx')
-    make_system_plots('tx')
+    make_bandwith_plots()
     make_system_plots('disk_writes')
     make_system_plots('available_disk')
     
