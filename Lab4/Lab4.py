@@ -38,7 +38,7 @@ def make_process_plot(metric):
                 APM_metrics[APM] = []
             APM_metrics[APM].append(metrics[metric])
     for APM, cpu in APM_metrics.items():
-        plt.plot(times, cpu, label=APM)
+        plt.plot(times, cpu, label=APM, color=colors[APM])
     plt.xlabel('time')
     plt.ylabel(metric)
     plt.title(f'{metric} metrics')
