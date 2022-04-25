@@ -3,6 +3,7 @@
 # Maxwell Fusco
 # April 25th, 2020
 
+from asyncore import read
 from os import system
 
 system('clear')
@@ -67,7 +68,7 @@ def create_user_id(first, last):
     return user_id
 
 def main():
-    pass
+    read_csv('linux_users.csv')
 
 if __name__ == '__main__':
     main()
