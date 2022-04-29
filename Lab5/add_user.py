@@ -1,74 +1,115 @@
-#!/usr/bin/python3
+import csv
+from subprocess import call
+import os
+from pwd import getpwnam
 
-# Maxwell Fusco
-# April 25th, 2020
+csv_users = {}
+bad_users = {}
 
-from asyncore import read
-from os import system
+with open('linux_users.csv', 'r') as csvfile:
+    csv = csv.reader(csvfile, delimiter=',')
+    for line in csv:
+        if line[0] == 'EmployeeID':
+            continue
+        csv_users[line[0]] = line[1:]
 
-system('clear')
-
-def read_csv(filename):
-    first = True
-    users = {}
-    with open(filename, 'r') as csv:
-        for line in csv:
-            if first:
-                first = False
-                continue
-            line = line.strip()
-            if line.endswith(','):
-                line = line[:-1]
-            line = line.split(',')
-            if len(line) != 7:
-                print(f'UserID {line[0]} was not added due to incorrect amount of fields')
-                continue
-            if any(item == '' for item in line):
-                print(f'UserID {line[0]} was not added due to empty fields')
-                continue
-            users[line[0]] = {}
-            users[line[0]]['LastName'] = line[1]
-            users[line[0]]['FirstName'] = line[2]
-            users[line[0]]['Office'] = line[3]
-            users[line[0]]['Phone'] = line[4]
-            users[line[0]]['Department'] = line[5]
-            users[line[0]]['Group'] = line[6]
-    return users
-
-def check_group(group):
-    with open('/etc/group') as file:
-        for line in file:
-            line = line.strip().split(':')[0]
-            if group == line:
-                return True
+def user_exists (username):
+    try:
+        getpwnam(username)
+        return True
+    except:
         return False
-
-def create_group(group):
-    system(f'groupadd {group}')
-    system(f'mkdir /home/{group}')
-
-def user_id_exists(username):
-    with open('/etc/passwd') as file:
-        for line in file:
-            line = line.strip().split(':')[0]
-            if line == username:
-                return True
-        return False
-
-def create_user_id(first, last):
-    user_id = first[0] + last
-    iterator = 1
-    if user_id_exists(user_id):
-        while True:
-            if user_id_exists(f'{user_id}{iterator}'):
-                iterator += 1
+    
+def make_usernames(id, user):
+    last = user[0].lower().replace("'", '')
+    first = user[1].lower().replace("'", '')
+    if last == '':
+        bad_users[id] = f'User ID {id}: Invalid last name "{last}"'
+        return None
+    if first == '':
+        bad_users[id] = f'Invalid first name "{first}"'
+        return None
+    username = first[0] + last[:5]
+    while True:
+        with open('/etc/passwd') as passwd:
+            if username in passwd.readlines():
+                username, value = username[:5], username[5]
+                try:
+                    value = int(value)
+                    username += str(value + 1)
+                except:
+                    username += '1'
             else:
                 break
-        return f'{user_id}{iterator}'
-    return user_id
+    full_name = user[1] + ' ' + user[0]
+    return (username, full_name, id)
 
-def main():
-    read_csv('linux_users.csv')
 
-if __name__ == '__main__':
-    main()
+def get_office(id, data):
+    office = data[2]
+    try:
+        temp = office.replace('-', '')
+        int(temp)
+        if '-' not in office:
+            raise KeyError
+    except:
+        bad_users[id] = f'Invalid office "{office}"'
+        return None
+    return office
+
+
+def get_department(id, user):
+    department = user[4]
+    if department == '':
+        bad_users[id] = f'Invalid department ""'
+        return None
+    return department
+
+
+def get_group(id, user):
+    group = user[5]
+    if group == '':
+        bad_users[id] = f'Invalid group ""'
+        return None
+    return group
+
+
+def group_exist(group):
+    with open('/etc/group', 'r') as groups:
+        return group in groups.readlines()
+
+
+for user in csv_users.items():
+    temp = make_usernames(*user)
+    if temp is None:
+        continue
+    username, full_name, id = temp
+
+    office = get_office(*user)
+    if office is None:
+        continue
+
+    password = username[::-1]
+
+    department = get_department(*user)
+    if department is None:
+        continue
+
+    group = get_group(*user)
+    if group is None:
+        continue
+
+    shell = '/bin/bash' if group != 'office' else '/bin/csh'
+
+    if not group_exist(group):
+        call(f'groupadd -f {group}', shell=True)
+
+    if not os.path.exists(f'/home/{department}'):
+        call(f'mkdir /home/{department}', shell=True)
+
+    call(f'useradd -m -d /home/{department}/{username} -s {shell} -g {group} -c "{full_name}" {username}', shell=True)
+    call(f'echo -e {password} | passwd {username} --stdin', shell=True)
+    call(f'passwd -e {username}', shell=True)
+
+for user, reason in bad_users.items():
+    print(f'BAD RECORD: EMPLOYEE_ID={user}, REASON=\'{reason}\'')
