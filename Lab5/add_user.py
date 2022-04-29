@@ -1,3 +1,4 @@
+#!/bin/python3
 import csv
 from subprocess import call
 import os
