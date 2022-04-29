@@ -8,6 +8,8 @@ from pwd import getpwnam
 csv_users = {}
 bad_users = {}
 
+call("clear")
+
 with open('linux_users.csv', 'r') as csvfile:
     csv = csv.reader(csvfile, delimiter=',')
     for line in csv:
